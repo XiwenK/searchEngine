@@ -18,6 +18,8 @@ public class IndexFiles {
         List<Review> reviews = dataUtils.readJSON(srcPath);
 
         try {
+            // stopwords reference in NLP: https://github.com/lighting66ban/stop-word
+
             Analyzer analyzer = new StandardAnalyzer();
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
             iwc.setOpenMode(IndexWriterConfig.OpenMode.CREATE);
