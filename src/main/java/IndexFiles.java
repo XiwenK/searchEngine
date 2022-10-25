@@ -22,11 +22,9 @@ public class IndexFiles {
         List<Review> reviews = dataUtils.readJSON(srcPath);
         List<String> self_stop_words = Files.readAllLines(Path.of(stopWordsPath),
                 StandardCharsets.UTF_8);
-        System.out.println(self_stop_words.size());
 
         try {
             // stopwords reference in NLP: https://github.com/lighting66ban/stop-word
-
             CharArraySet stopSet = new CharArraySet(self_stop_words, true);
             Analyzer analyzer = new StandardAnalyzer(stopSet);
             IndexWriterConfig iwc = new IndexWriterConfig(analyzer);
@@ -41,7 +39,7 @@ public class IndexFiles {
                 if(document_cnt%(document_num/10)==0)
                 {
                     long endTime   = System.currentTimeMillis();
-                    System.out.println("Processing this 10% documents cost " + (endTime - startTime) + " milliseconds");
+                    System.out.println("Processing this 10% of documents costs " + (endTime - startTime) + " milliseconds");
                     startTime = System.currentTimeMillis();
                 }
                 document_cnt+=1;

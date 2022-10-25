@@ -1,6 +1,7 @@
 package Handle;
 
 import org.apache.lucene.analysis.Analyzer;
+import org.apache.lucene.analysis.CharArraySet;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
@@ -11,8 +12,12 @@ import org.apache.lucene.search.*;
 import org.apache.lucene.store.FSDirectory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 public class SearchFiles {
 
@@ -22,7 +27,12 @@ public class SearchFiles {
             DirectoryReader reader = DirectoryReader.open(FSDirectory.open(Paths.get(indexPath)));
             IndexSearcher indexSearcher = new IndexSearcher(reader);
             BooleanQuery.Builder builder = new BooleanQuery.Builder();
-            Analyzer analyzer = new StandardAnalyzer();
+
+            String stopWordsPath = System.getProperty("user.dir") + "/static/stopwords.txt";
+            List<String> self_stop_words = Files.readAllLines(Path.of(stopWordsPath), StandardCharsets.UTF_8);
+            CharArraySet stopSet = new CharArraySet(self_stop_words, true);
+            Analyzer analyzer = new StandardAnalyzer(stopSet);
+
             QueryParser parser = new QueryParser("reviewText", analyzer);
             Query textQuery = parser.parse(queryString);
             builder.add(textQuery, BooleanClause.Occur.MUST);
@@ -54,7 +64,7 @@ public class SearchFiles {
             return;
         }
 
-        for (int i = 0; i < Math.min(10, hits.length); i++) {
+        for (int i = 0; i < Math.min(5, hits.length); i++) {
             int docId = hits[i].doc;
             float score = hits[i].score;
             Document doc = indexSearcher.doc(docId);
@@ -71,6 +81,7 @@ public class SearchFiles {
 
     public static void main(String[] args) throws IOException, ParseException {
         String indexPath = System.getProperty("user.dir") + "/index";
+//        String queryString = "Johnathan Barber";
         String queryString = "for summer";
         String asin = "B00H91I078";
         searchIndex(indexPath, asin, queryString, 100);

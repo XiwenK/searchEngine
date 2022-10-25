@@ -8,11 +8,14 @@ public class cmd {
         String reviewText = (String) cmd_args[1];
         int repeat = (int) cmd_args[2];
         int maxHits = (int) cmd_args[3];
-        System.out.println(asin + " " + reviewText + " " + repeat + " " + maxHits);
+//        System.out.println(asin + " " + reviewText + " " + repeat + " " + maxHits);
         String indexPath = System.getProperty("user.dir") + "/index";
 
+        long startTime = System.currentTimeMillis();
         for (int i = 0; i < repeat; i++) {
             Handle.SearchFiles.searchIndex(indexPath, asin, reviewText, maxHits);
         }
+        long endTime   = System.currentTimeMillis();
+        System.out.println("Query Search Time:" + (endTime - startTime)/repeat + " milliseconds");
     }
 }
