@@ -36,7 +36,7 @@ public class SearchFiles {
             QueryParser parser = new QueryParser("reviewText", analyzer);
             Query textQuery = parser.parse(queryString);
             builder.add(textQuery, BooleanClause.Occur.MUST);
-            if (asin != "") {
+            if (!asin.equals("")) {
                 TermQuery idQuery = new TermQuery(new Term("asin", asin));
                 builder.add(idQuery, BooleanClause.Occur.MUST);
             }
